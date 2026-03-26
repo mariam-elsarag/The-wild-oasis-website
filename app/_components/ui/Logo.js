@@ -1,4 +1,4 @@
-import { LogoImg } from "@/app/assets/images/Image";
+import { LogoImg } from "@/app/_assets/images/Image";
 import Image from "next/image";
 import Link from "next/link";
 
