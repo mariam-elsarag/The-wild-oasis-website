@@ -1,7 +1,11 @@
-import ReservationCard from "./ReservationCard";
+import ReservationCard from "@/app/_components/ui/reservaition/ReservationCard";
+import Link from "next/link";
+import React from "react";
+export const metadata = {
+  title: "Reservations",
+};
 
-export default function Page() {
-  // CHANGE
+const Reservaitions = () => {
   const bookings = [];
 
   return (
@@ -13,9 +17,9 @@ export default function Page() {
       {bookings.length === 0 ? (
         <p className="text-lg">
           You have no reservations yet. Check out our{" "}
-          <a className="underline text-accent-500" href="/cabins">
+          <Link className="underline text-accent-500" href="/cabins">
             luxury cabins &rarr;
-          </a>
+          </Link>
         </p>
       ) : (
         <ul className="space-y-6">
@@ -26,4 +30,6 @@ export default function Page() {
       )}
     </div>
   );
-}
+};
+
+export default Reservaitions;
