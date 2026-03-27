@@ -2,6 +2,9 @@ import Image from "next/image";
 import React from "react";
 import { AboutImg1, AboutImg2 } from "../_assets/images/Image";
 import Link from "next/link";
+export const metadata = {
+  title: "About",
+};
 
 const About = () => {
   return (

@@ -1,23 +1,22 @@
 import { prisma } from "@/lib/prisma";
 import { eachDayOfInterval } from "date-fns";
+import { notFound } from "next/navigation";
 
 /////////////
 // GET
 
 export async function getCabin(id) {
-  const { data, error } = await supabase
-    .from("cabins")
-    .select("*")
-    .eq("id", id)
-    .single();
-
+  console.log(id, "id");
+  const data = await prisma.cabin.findUnique({
+    where: { id: +id },
+  });
   // For testing
   // await new Promise((res) => setTimeout(res, 1000));
 
-  if (error) {
-    console.error(error);
+  if (data == null) {
+    // throw new Error("Cabin not found");
+    notFound();
   }
-
   return data;
 }
 
@@ -36,15 +35,6 @@ export async function getCabinPrice(id) {
 }
 
 export const getCabins = async function () {
-  // const { data, error } = await supabase
-  //   .from('cabins')
-  //   .select('id, name, maxCapacity, regularPrice, discount, image')
-  //   .order('name');
-
-  // if (error) {
-  //   console.error(error);
-  //   throw new Error('Cabins could not be loaded');
-  // }
   const data = await prisma.cabin.findMany({
     orderBy: {
       id: "asc",

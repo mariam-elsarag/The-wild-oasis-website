@@ -1,14 +1,12 @@
-import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
-import CabinCard from "../_components/ui/cabin/CabinCard";
-import { getCabins } from "../_lib/data-service";
+import CabinList from "../_components/ui/cabin/CabinList";
+import { Suspense } from "react";
+import Spinner from "@/starter/components/Spinner";
 
 export const metadata = {
   title: "Cabins",
 };
 
-export default async function Cabins() {
-  const cabins = await getCabins();
-
+export default function Cabins() {
   return (
     <div>
       <h1 className="text-4xl mb-5 text-accent-400 font-medium">
@@ -23,13 +21,9 @@ export default async function Cabins() {
         Welcome to paradise.
       </p>
 
-      {cabins.length > 0 && (
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 xl:gap-14">
-          {cabins.map((cabin) => (
-            <CabinCard cabin={cabin} key={cabin.id} />
-          ))}
-        </div>
-      )}
+      <Suspense fallback={<Spinner />}>
+        <CabinList />
+      </Suspense>
     </div>
   );
 }

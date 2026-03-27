@@ -3,6 +3,10 @@ import Link from "next/link";
 import React from "react";
 import { HomeBgImg } from "./_assets/images/Image";
 
+export const metadata = {
+  title: "Welcome",
+};
+
 const Home = () => {
   return (
     <main className="mt-24">
