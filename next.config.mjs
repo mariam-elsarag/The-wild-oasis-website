@@ -10,6 +10,7 @@ const nextConfig = {
     ],
     qualities: [78, 80, 100],
   },
+  // output: "export",
 };
 
 export default nextConfig;
