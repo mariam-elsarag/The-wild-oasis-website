@@ -31,7 +31,7 @@ export default async function Cabins({ searchParams }) {
       <div className="flex justify-end mb-8">
         <Filter />
       </div>
-      <Suspense fallback={<Spinner />}>
+      <Suspense key={filter} fallback={<Spinner />}>
         <CabinList filter={filter} />
       </Suspense>
     </div>

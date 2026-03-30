@@ -67,6 +67,7 @@ export const getCabins = async function (filter) {
       id: "asc",
     },
   });
+  // await new Promise((res) => setTimeout(res, 1000));
 
   return data;
 };

@@ -16,7 +16,7 @@ const Filter = () => {
   const router = useRouter();
   const searchParam = useSearchParams();
   const pathname = usePathname();
-  const capacity = searchParam?.get("capacity");
+  const activeFilter = searchParam?.get("capacity") ?? "all";
   const handleFilter = (value) => {
     const params = new URLSearchParams(searchParam);
     params.set("capacity", value);
@@ -27,7 +27,9 @@ const Filter = () => {
       {filterList?.map((filterItem) => (
         <button
           className={` ${
-            capacity === filterItem?.value ? "bg-primary-700" : ""
+            activeFilter === filterItem?.value
+              ? "bg-primary-700 text-primary-50"
+              : ""
           } cursor-pointer px-5 py-2 hover:bg-primary-700 transition-all ease-in-out duration-300`}
           key={filterItem?.id}
           onClick={() => {
