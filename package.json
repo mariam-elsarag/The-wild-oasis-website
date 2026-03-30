@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "seed": "node prisma/seed.js"
+    "prod": "next build && next start",
+    "lint": "eslint"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

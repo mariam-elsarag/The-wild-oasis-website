@@ -1,9 +1,12 @@
 import { getCabins } from "@/app/_lib/data-service";
 import React from "react";
 import CabinCard from "./CabinCard";
+import { unstable_noStore as noStore } from "next/cache";
 
-const CabinList = async () => {
-  const cabins = await getCabins();
+const CabinList = async ({ filter }) => {
+  const cabins = await getCabins(filter);
+  // if i wanna prevent cash for component and i don't use fetch, will be usefull when PPR
+  noStore();
   return (
     <>
       {cabins.length > 0 && (

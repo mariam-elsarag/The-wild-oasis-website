@@ -1,12 +1,19 @@
 import CabinList from "../_components/ui/cabin/CabinList";
 import { Suspense } from "react";
 import Spinner from "@/starter/components/Spinner";
+import Filter from "../_components/ui/Filter";
+
+// this for revalidate to stop cashing (need to be value not calc one and with seconds) zero for no cash and if we set time that meen ISR
+// export const revalidate = 0;
+// export const revalidate = 3600;
+// export const revalidate = 15;
 
 export const metadata = {
   title: "Cabins",
 };
-
-export default function Cabins() {
+export default async function Cabins({ searchParams }) {
+  const { capacity } = await searchParams;
+  const filter = capacity ?? "all";
   return (
     <div>
       <h1 className="text-4xl mb-5 text-accent-400 font-medium">
@@ -21,8 +28,11 @@ export default function Cabins() {
         Welcome to paradise.
       </p>
 
+      <div className="flex justify-end mb-8">
+        <Filter />
+      </div>
       <Suspense fallback={<Spinner />}>
-        <CabinList />
+        <CabinList filter={filter} />
       </Suspense>
     </div>
   );

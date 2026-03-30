@@ -14,7 +14,6 @@ export async function getCabin(id) {
   // await new Promise((res) => setTimeout(res, 1000));
 
   if (data == null) {
-    // throw new Error("Cabin not found");
     notFound();
   }
   return data;
@@ -34,12 +33,41 @@ export async function getCabinPrice(id) {
   return data;
 }
 
-export const getCabins = async function () {
+export const getCabins = async function (filter) {
+  let where = {};
+
+  if (filter === "small") {
+    where = {
+      maxCapacity: {
+        lte: 3,
+      },
+    };
+  }
+
+  if (filter === "medium") {
+    where = {
+      maxCapacity: {
+        gt: 3,
+        lt: 8,
+      },
+    };
+  }
+
+  if (filter === "large") {
+    where = {
+      maxCapacity: {
+        gte: 8,
+      },
+    };
+  }
+
   const data = await prisma.cabin.findMany({
+    where,
     orderBy: {
       id: "asc",
     },
   });
+
   return data;
 };
 

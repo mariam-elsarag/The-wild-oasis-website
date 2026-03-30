@@ -2,6 +2,7 @@ import { getCabin, getCabins } from "@/app/_lib/data-service";
 import Image from "next/image";
 import React from "react";
 import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
+import TextExpander from "@/app/_components/ui/TextExpander";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -16,10 +17,6 @@ export async function generateStaticParams() {
 const CabinDetails = async ({ params }) => {
   const { id } = await params;
   const cabin = await getCabin(id);
-  console.log(cabin);
-  if (!cabin) {
-    return <div>no cabins</div>;
-  }
 
   const { name, maxCapacity, price, discount, image, description } = cabin;
   return (
@@ -39,7 +36,9 @@ const CabinDetails = async ({ params }) => {
             Cabin {name}
           </h3>
 
-          <p className="text-lg text-primary-300 mb-10">{description}</p>
+          <p className="text-lg text-primary-300 mb-10">
+            <TextExpander>{description}</TextExpander>
+          </p>
 
           <ul className="flex flex-col gap-4 mb-7">
             <li className="flex gap-3 items-center">
