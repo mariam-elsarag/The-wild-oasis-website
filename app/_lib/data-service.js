@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { eachDayOfInterval } from "date-fns";
+import { da } from "date-fns/locale";
 import { notFound } from "next/navigation";
 
 /////////////
@@ -118,44 +119,45 @@ export async function getBookings(guestId) {
 }
 
 export async function getBookedDatesByCabinId(cabinId) {
-  let today = new Date();
+  const today = new Date();
   today.setUTCHours(0, 0, 0, 0);
-  today = today.toISOString();
 
-  // Getting all bookings
-  const { data, error } = await supabase
-    .from("bookings")
-    .select("*")
-    .eq("cabinId", cabinId)
-    .or(`startDate.gte.${today},status.eq.checked-in`);
+  const data = await prisma.booking.findMany({
+    where: {
+      cabinId: Number(cabinId),
+      status: "CHECKIN",
+      endDate: {
+        gte: today,
+      },
+    },
+  });
 
-  if (error) {
-    console.error(error);
-    throw new Error("Bookings could not get loaded");
+  if (data === null) {
+    throw new Error("Booking could not get loaded");
   }
-
-  // Converting to actual dates to be displayed in the date picker
+  // Convert bookings into disabled dates for date picker
   const bookedDates = data
-    .map((booking) => {
-      return eachDayOfInterval({
+    .map((booking) =>
+      eachDayOfInterval({
         start: new Date(booking.startDate),
         end: new Date(booking.endDate),
-      });
-    })
+      })
+    )
     .flat();
 
   return bookedDates;
 }
-
 export async function getSettings() {
-  const { data, error } = await supabase.from("settings").select("*").single();
+  try {
+    const data = await prisma.settings.findFirst({
+      orderBy: { createdAt: "asc" },
+    });
 
-  if (error) {
-    console.error(error);
-    throw new Error("Settings could not be loaded");
+    return data;
+  } catch (err) {
+    console.error("getSettings error:", err);
+    return err;
   }
-
-  return data;
 }
 
 export async function getCountries() {

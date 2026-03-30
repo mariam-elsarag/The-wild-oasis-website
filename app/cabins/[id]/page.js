@@ -1,8 +1,10 @@
-import { getCabin, getCabins } from "@/app/_lib/data-service";
-import Image from "next/image";
-import React from "react";
-import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
+import Reservaition from "@/app/_components/ui/cabin/Reservaition";
 import TextExpander from "@/app/_components/ui/TextExpander";
+import { getCabin, getCabins } from "@/app/_lib/data-service";
+import Spinner from "@/starter/components/Spinner";
+import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
+import { Suspense } from "react";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -66,9 +68,12 @@ const CabinDetails = async ({ params }) => {
       </div>
 
       <div>
-        <h2 className="text-5xl font-semibold text-center">
-          Reserve today. Pay on arrival.
+        <h2 className="text-5xl font-semibold text-center text-accent-400 mb-10">
+          Reserve {name} today. Pay on arrival.
         </h2>
+        <Suspense fallback={<Spinner />}>
+          <Reservaition cabin={cabin} />
+        </Suspense>
       </div>
     </div>
   );

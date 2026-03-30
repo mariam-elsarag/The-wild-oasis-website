@@ -1,14 +1,9 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "postgresql"
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model Cabin {
@@ -18,63 +13,61 @@ model Cabin {
   price       Decimal   @db.Decimal(10, 2)
   discount    Decimal   @default(0) @db.Decimal(10, 2)
   description String
-  image       String    // single image as string
-  bookings    Booking[] @relation("CabinBookings")
   createdAt   DateTime  @default(now())
+  image       String
+  bookings    Booking[] @relation("CabinBookings")
 }
 
-
-
 model Booking {
-  id           Int          @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   startDate    DateTime
   endDate      DateTime
-  numNights    Int  @default(1)
-  numGuests    Int  @default(1)
-  cabinPrice   Decimal      @db.Decimal(10, 2)
-  extraPrice   Decimal      @db.Decimal(10, 2) @default(0)
-  totalPrice   Decimal      @db.Decimal(10, 2)
+  numNights    Int           @default(1)
+  numGuests    Int           @default(1)
+  cabinPrice   Decimal       @db.Decimal(10, 2)
+  extraPrice   Decimal       @default(0) @db.Decimal(10, 2)
+  totalPrice   Decimal       @db.Decimal(10, 2)
   status       BookingStatus @default(PENDING)
   hasBreakfast Boolean       @default(false)
   isPaid       Boolean       @default(false)
   observations String?
-  createdAt   DateTime  @default(now())
-
   cabinId      Int
-  cabin        Cabin         @relation("CabinBookings", fields: [cabinId], references: [id], onDelete: Cascade)
-
   userId       Int
+  createdAt    DateTime      @default(now())
+  cabin        Cabin         @relation("CabinBookings", fields: [cabinId], references: [id], onDelete: Cascade)
   user         User          @relation("UserBookings", fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model User {
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  fullName    String
+  nationalId  String?
+  avatar      String?
+  nationality String?
+  countryFlag String?
+  role        Role      @default(GUEST)
+  createdAt   DateTime  @default(now())
+  bookings    Booking[] @relation("UserBookings")
+}
+
+model Settings {
+  id                  Int      @id @default(autoincrement())
+  minBookingLength    Int      @default(3)
+  maxBookingLength    Int      @default(90)
+  maxGuestsPerBooking Int      @default(8)
+  breakfastPrice      Decimal  @default(15.00) @db.Decimal(10, 2)
+  createdAt           DateTime @default(now())
+}
+
 enum BookingStatus {
   PENDING
   CHECKIN
   CHECKOUT
   UNCONFIRMED
 }
-model User {
-  id          Int      @id @default(autoincrement())
-  email       String   @unique
-  fullName    String
-  nationalId  String?
-  avatar      String?
-  nationality String?
-  countryFlag String?
-  role        Role     @default(GUEST)
-  createdAt   DateTime @default(now())
-
-  bookings    Booking[] @relation("UserBookings")
-}
 
 enum Role {
   GUEST
   ADMIN
 }
-model Setting {
-  id                  Int     @id @default(autoincrement())
-  minBookingLength    Int     @default(3)
-  maxBookingLength    Int     @default(90)
-  maxGuestsPerBooking Int     @default(8)
-  breakfastPrice      Decimal @db.Decimal(10, 2) @default("15.00")
-}
-
