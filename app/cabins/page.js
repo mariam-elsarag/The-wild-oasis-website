@@ -2,6 +2,7 @@ import CabinList from "../_components/ui/cabin/CabinList";
 import { Suspense } from "react";
 import Spinner from "@/starter/components/Spinner";
 import Filter from "../_components/ui/Filter";
+import ReservationReminder from "../_components/ui/reservaition/ReservationReminder";
 
 // this for revalidate to stop cashing (need to be value not calc one and with seconds) zero for no cash and if we set time that meen ISR
 // export const revalidate = 0;
@@ -33,6 +34,7 @@ export default async function Cabins({ searchParams }) {
       </div>
       <Suspense key={filter} fallback={<Spinner />}>
         <CabinList filter={filter} />
+        <ReservationReminder />
       </Suspense>
     </div>
   );

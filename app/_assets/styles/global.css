@@ -63,6 +63,7 @@
   --rdp-day_button-height: 32px !important;
   --rdp-accent-color: var(--color-accent-500) !important;
   --rdp-background-color: var(--color-accent-600) !important;
+  --rdp-range_middle-background-color: var(--color-accent-600) !important;
   margin: 0 !important;
 }
 /* .rdp-today:not(.rdp-outside) {
