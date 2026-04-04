@@ -29,6 +29,34 @@ export async function updateProfile(formData) {
   console.log("update profile", updateData);
 }
 
+export async function deleteReservation(bookingId) {
+  const session = await auth();
+  if (!session) {
+    throw new Error("You must be logged in");
+  }
+
+  // get booking to make sure user able to delete this booking
+  const booking = await prisma.Booking.findFirst({
+    where: {
+      id: bookingId,
+      userId: session.user.userId,
+    },
+  });
+  if (!booking) {
+    throw new Error("You are not allowed to delete this booking");
+  }
+  try {
+    await prisma.Booking.delete({
+      where: {
+        id: bookingId,
+      },
+    });
+    revalidatePath("/account/reservations");
+  } catch (err) {
+    throw new Error("Booking could not be deleted");
+  }
+}
+
 export async function siginInAction() {
   await signIn("google", { redirectTo: "/account" });
 }
