@@ -1,15 +1,15 @@
 import UpdateProfileForm from "@/app/_components/ui/profile/UpdateProfileForm";
 import SelectCountry from "@/app/_components/ui/SelectCountry";
-import Image from "next/image";
-import React from "react";
+import { auth } from "@/app/_lib/auth";
+import { getGuest } from "@/app/_lib/data-service";
 export const metadata = {
   title: "Update profile",
 };
 
-const Profile = () => {
-  // CHANGE
-  const countryFlag = "pt.jpg";
-  const nationality = "portugal";
+const Profile = async () => {
+  const session = await auth();
+  const user = await getGuest(session?.user?.email);
+  console.log(user);
 
   return (
     <div>
@@ -22,12 +22,12 @@ const Profile = () => {
         faster and smoother. See you soon!
       </p>
 
-      <UpdateProfileForm>
+      <UpdateProfileForm guest={user}>
         <SelectCountry
           name="nationality"
           id="nationality"
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
-          defaultCountry={nationality}
+          defaultCountry={user?.nationality}
         />
       </UpdateProfileForm>
     </div>
