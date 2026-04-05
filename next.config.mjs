@@ -12,7 +12,6 @@ const nextConfig = {
         hostname: "lh3.googleusercontent.com",
       },
     ],
-    qualities: [78, 80, 100],
   },
   // output: "export",
 };

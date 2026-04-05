@@ -13,7 +13,6 @@ const Home = () => {
       <Image
         fill
         placeholder="blur"
-        quality={80}
         className="object-cover object-top "
         src={HomeBgImg}
         alt="Mountains and forests with two cabins"
