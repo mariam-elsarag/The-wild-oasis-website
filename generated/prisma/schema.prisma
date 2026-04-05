@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Cabin {
+  id          Int       @id @default(autoincrement())
+  name        String
+  maxCapacity Int
+  price       Decimal   @db.Decimal(10, 2)
+  discount    Decimal   @default(0) @db.Decimal(10, 2)
+  description String
+  createdAt   DateTime  @default(now())
+  image       String
+  bookings    Booking[] @relation("CabinBookings")
+}
+
+model Booking {
+  id           Int           @id @default(autoincrement())
+  startDate    DateTime
+  endDate      DateTime
+  numNights    Int           @default(1)
+  numGuests    Int           @default(1)
+  cabinPrice   Decimal       @db.Decimal(10, 2)
+  extraPrice   Decimal       @default(0) @db.Decimal(10, 2)
+  totalPrice   Decimal       @db.Decimal(10, 2)
+  status       BookingStatus @default(PENDING)
+  hasBreakfast Boolean       @default(false)
+  isPaid       Boolean       @default(false)
+  observations String?
+  cabinId      Int
+  userId       Int
+  createdAt    DateTime      @default(now())
+  cabin        Cabin         @relation("CabinBookings", fields: [cabinId], references: [id], onDelete: Cascade)
+  user         User          @relation("UserBookings", fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  fullName    String
+  nationalId  String?
+  avatar      String?
+  nationality String?
+  countryFlag String?
+  role        Role      @default(GUEST)
+  createdAt   DateTime  @default(now())
+  bookings    Booking[] @relation("UserBookings")
+}
+
+model Settings {
+  id                  Int      @id @default(autoincrement())
+  minBookingLength    Int      @default(3)
+  maxBookingLength    Int      @default(90)
+  maxGuestsPerBooking Int      @default(8)
+  breakfastPrice      Decimal  @default(15.00) @db.Decimal(10, 2)
+  createdAt           DateTime @default(now())
+}
+
+enum BookingStatus {
+  PENDING
+  CHECKIN
+  CHECKOUT
+  UNCONFIRMED
+}
+
+enum Role {
+  GUEST
+  ADMIN
+}
