@@ -1,7 +1,7 @@
+import Spinner from "@/app/_components/feedback/Spinner";
 import Cabin from "@/app/_components/ui/cabin/Cabin";
 import Reservaition from "@/app/_components/ui/cabin/Reservaition";
-import { getCabin, getCabins } from "@/app/_lib/data-service";
-import Spinner from "@/app/_components/feedback/Spinner";
+import { getCabin } from "@/app/_lib/data-service";
 import { Suspense } from "react";
 
 export async function generateMetadata({ params }) {
@@ -10,10 +10,6 @@ export async function generateMetadata({ params }) {
   return { title: `Cabin ${name}` };
 }
 
-export async function generateStaticParams() {
-  const cabins = await getCabins();
-  return cabins?.map(({ id }) => ({ id: String(id) }));
-}
 const CabinDetails = async ({ params }) => {
   const { id } = await params;
   const cabin = await getCabin(id);
