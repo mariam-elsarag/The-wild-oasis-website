@@ -1,6 +1,10 @@
 "use client";
-import { isWithinInterval } from "date-fns";
-import { useState } from "react";
+import {
+  differenceInDays,
+  isPast,
+  isSameDay,
+  isWithinInterval,
+} from "date-fns";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { useReservation } from "../_context/ReservationContext";
@@ -17,12 +21,10 @@ function isAlreadyBooked(range, datesArr) {
 
 function DateSelector({ settings, bookedDates, cabin }) {
   const { range, setRange, resetRange } = useReservation();
-  // CHANGE
-  const regularPrice = 23;
-  const discount = 23;
-  const numNights = 23;
-  const cabinPrice = 23;
-
+  const { price, discount } = cabin;
+  const displayRange = isAlreadyBooked(range, bookedDates) ? {} : range;
+  const numNights = differenceInDays(displayRange.to, displayRange.from);
+  const cabinPrice = numNights * (price - discount);
   // SETTINGS
   const { minBookingLength, maxBookingLength } = settings;
 
@@ -31,7 +33,7 @@ function DateSelector({ settings, bookedDates, cabin }) {
       <DayPicker
         className="pt-12 place-self-center"
         mode="range"
-        selected={range}
+        selected={displayRange}
         onSelect={setRange}
         min={minBookingLength + 1}
         max={maxBookingLength}
@@ -40,6 +42,10 @@ function DateSelector({ settings, bookedDates, cabin }) {
         toYear={new Date().getFullYear() + 5}
         captionLayout="dropdown"
         numberOfMonths={2}
+        disabled={(currentDate) =>
+          isPast(currentDate) ||
+          bookedDates.some((date) => isSameDay(date, currentDate))
+        }
       />
 
       <div className="flex items-center justify-between px-8 bg-accent-500 text-primary-800 h-[72px]">
@@ -47,13 +53,13 @@ function DateSelector({ settings, bookedDates, cabin }) {
           <p className="flex gap-2 items-baseline">
             {discount > 0 ? (
               <>
-                <span className="text-2xl">${regularPrice - discount}</span>
+                <span className="text-2xl">${price - discount}</span>
                 <span className="line-through font-semibold text-primary-700">
-                  ${regularPrice}
+                  ${price}
                 </span>
               </>
             ) : (
-              <span className="text-2xl">${regularPrice}</span>
+              <span className="text-2xl">${price}</span>
             )}
             <span className="">/night</span>
           </p>

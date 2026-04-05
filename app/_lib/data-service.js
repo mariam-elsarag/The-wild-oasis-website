@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { eachDayOfInterval } from "date-fns";
+import { eachDayOfInterval, startOfDay } from "date-fns";
 
 import { notFound } from "next/navigation";
 
@@ -131,16 +131,19 @@ export async function getBookings(userId) {
 }
 
 export async function getBookedDatesByCabinId(cabinId) {
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
+  const today = startOfDay(new Date());
 
   const data = await prisma.booking.findMany({
     where: {
       cabinId: Number(cabinId),
-      status: "CHECKIN",
-      endDate: {
-        gte: today,
-      },
+      OR: [
+        { status: "CHECKIN" },
+        {
+          startDate: {
+            gte: today,
+          },
+        },
+      ],
     },
   });
 
@@ -198,20 +201,4 @@ export async function createGuest(newGuest) {
     console.log(err);
     throw new Error("Guest could not be created");
   }
-}
-
-export async function createBooking(newBooking) {
-  const { data, error } = await supabase
-    .from("bookings")
-    .insert([newBooking])
-    // So that the newly created object gets returned!
-    .select()
-    .single();
-
-  if (error) {
-    console.error(error);
-    throw new Error("Booking could not be created");
-  }
-
-  return data;
 }

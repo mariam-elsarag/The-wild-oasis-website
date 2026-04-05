@@ -5,7 +5,7 @@ import { format } from "date-fns";
 
 function ReservationReminder() {
   const { range, resetRange } = useReservation();
-
+  console.log(range, "ran");
   if (!range.from || !range.to) return null;
 
   return (

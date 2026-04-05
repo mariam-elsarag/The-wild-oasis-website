@@ -8,7 +8,9 @@ export const ReservationProvider = ({ children }) => {
   const [range, setRange] = useState(initialState);
   const resetRange = () => {
     setRange(initialState);
+    console.log("reset range");
   };
+  console.log(range, "range kkkk");
   return (
     <ReservationContext.Provider value={{ range, setRange, resetRange }}>
       {children}

@@ -28,8 +28,6 @@ export async function updateProfile(formData) {
     throw new Error("Guest couldn't be updated");
   }
   redirect("/account/profile");
-
-  console.log("update profile", updateData);
 }
 
 export async function deleteReservation(bookingId) {
@@ -89,6 +87,34 @@ export async function updateReservation(bookingId, formData) {
   }
 
   redirect("/account/reservations");
+}
+export async function createReservation(bookingData, formData) {
+  const session = await auth();
+  if (!session) {
+    throw new Error("You must be logged in");
+  }
+  const newBooking = {
+    ...bookingData,
+    userId: session.user.userId,
+    numGuests: +formData.get("numGuests"),
+    observations: formData.get("observations").slice(0, 1000),
+    extraPrice: 0,
+    totalPrice: bookingData.cabinPrice,
+    status: "UNCONFIRMED",
+    isPaid: false,
+    hasBreakfast: false,
+  };
+  console.log(bookingData, formData, "booking");
+  try {
+    await prisma.booking.create({
+      data: newBooking,
+    });
+    revalidatePath(`/cabins/${bookingData?.cabinId}`);
+  } catch (err) {
+    console.error(err);
+    throw new Error("Booking could not be created");
+  }
+  redirect("/cabins/thank-you");
 }
 export async function siginInAction() {
   await signIn("google", { redirectTo: "/account" });
