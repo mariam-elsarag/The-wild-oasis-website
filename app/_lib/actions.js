@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth, signIn, signOut } from "./auth";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function updateProfile(formData) {
   const session = await auth();
@@ -26,6 +27,8 @@ export async function updateProfile(formData) {
   } catch (err) {
     throw new Error("Guest couldn't be updated");
   }
+  redirect("/account/profile");
+
   console.log("update profile", updateData);
 }
 
@@ -35,7 +38,6 @@ export async function deleteReservation(bookingId) {
     throw new Error("You must be logged in");
   }
 
-  // get booking to make sure user able to delete this booking
   const booking = await prisma.Booking.findFirst({
     where: {
       id: bookingId,
@@ -56,7 +58,38 @@ export async function deleteReservation(bookingId) {
     throw new Error("Booking could not be deleted");
   }
 }
+export async function updateReservation(bookingId, formData) {
+  const session = await auth();
+  if (!session) {
+    throw new Error("You must be logged in");
+  }
+  const booking = await prisma.Booking.findFirst({
+    where: {
+      id: +bookingId,
+      userId: session.user.userId,
+    },
+  });
+  if (!booking) {
+    throw new Error("You are not allowed to update this booking");
+  }
+  const updateData = {
+    numGuests: +formData.get("numGuests"),
+    observations: formData.get("observations").slice(0, 1000),
+  };
+  try {
+    await prisma.Booking.update({
+      where: {
+        id: +bookingId,
+      },
+      data: updateData,
+    });
+  } catch (err) {
+    console.log(err, "error");
+    throw new Error("Booking could not be updated");
+  }
 
+  redirect("/account/reservations");
+}
 export async function siginInAction() {
   await signIn("google", { redirectTo: "/account" });
 }

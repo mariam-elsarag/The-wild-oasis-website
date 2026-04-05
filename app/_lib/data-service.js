@@ -1,13 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { eachDayOfInterval } from "date-fns";
-import { da } from "date-fns/locale";
+
 import { notFound } from "next/navigation";
 
 /////////////
 // GET
 
 export async function getCabin(id) {
-  console.log(id, "id");
   const data = await prisma.cabin.findUnique({
     where: { id: +id },
   });
@@ -83,19 +82,24 @@ export async function getGuest(email) {
   return data;
 }
 
-export async function getBooking(id) {
-  const { data, error, count } = await supabase
-    .from("bookings")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if (error) {
-    console.error(error);
+export async function getBooking(id, userId) {
+  try {
+    const data = await prisma.booking.findFirst({
+      where: {
+        id: id,
+        userId,
+      },
+      include: {
+        cabin: {
+          select: { maxCapacity: true },
+        },
+      },
+    });
+    return data;
+  } catch (err) {
+    console.log(err, "error");
     throw new Error("Booking could not get loaded");
   }
-
-  return data;
 }
 
 export async function getBookings(userId) {
@@ -209,23 +213,5 @@ export async function createBooking(newBooking) {
     throw new Error("Booking could not be created");
   }
 
-  return data;
-}
-
-/////////////
-// UPDATE
-
-export async function updateBooking(id, updatedFields) {
-  const { data, error } = await supabase
-    .from("bookings")
-    .update(updatedFields)
-    .eq("id", id)
-    .select()
-    .single();
-
-  if (error) {
-    console.error(error);
-    throw new Error("Booking could not be updated");
-  }
   return data;
 }
