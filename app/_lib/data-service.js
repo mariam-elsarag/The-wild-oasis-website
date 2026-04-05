@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { eachDayOfInterval, startOfDay } from "date-fns";
 
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 
 /////////////
 // GET
@@ -14,7 +14,7 @@ export async function getCabin(id) {
   // await new Promise((res) => setTimeout(res, 1000));
 
   if (data == null) {
-    notFound();
+    redirect("/404");
   }
   return data;
 }
