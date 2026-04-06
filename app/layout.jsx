@@ -1,11 +1,14 @@
 import React from "react";
 
 // --fonts
-import { Josefin_Sans } from "next/font/google";
+import { Josefin_Sans, Inter } from "next/font/google";
 // styles
 import "@/app/_assets/styles/global.css";
 import Header from "./_components/layout/Header";
 import Providers from "./_context/Providers";
+import { cn } from "@/lib/utils";
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 const josefin = Josefin_Sans({
   subsets: ["latin"],
@@ -22,7 +25,7 @@ export const metadata = {
 };
 const RootLayout = ({ children }) => {
   return (
-    <html lang="en">
+    <html lang="en" className={cn("font-sans", inter.variable)}>
       <body
         className={`${josefin?.className} relative bg-primary-950 text-primary-100 min-h-screen flex flex-col`}
       >
