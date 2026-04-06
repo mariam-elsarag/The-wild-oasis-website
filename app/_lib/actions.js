@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { auth, signIn, signOut } from "./auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { updateBookingSchema } from "../_utils/zodSchemas";
+import { toast } from "sonner";
 
 export async function updateProfile(formData) {
   const session = await auth();
@@ -69,37 +71,57 @@ export async function deleteReservation(bookingId) {
     };
   }
 }
-export async function updateReservation(bookingId, formData) {
-  const session = await auth();
-  if (!session) {
-    throw new Error("You must be logged in");
-  }
-  const booking = await prisma.Booking.findFirst({
-    where: {
-      id: +bookingId,
-      userId: session.user.userId,
-    },
-  });
-  if (!booking) {
-    throw new Error("You are not allowed to update this booking");
-  }
-  const updateData = {
-    numGuests: +formData.get("numGuests"),
-    observations: formData.get("observations").slice(0, 1000),
-  };
-  try {
-    await prisma.Booking.update({
+export async function updateReservation(data) {
+  const { bookingId, numGuests, observations } = data;
+  const result = updateBookingSchema.safeParse(data);
+  if (!result.success) {
+    return {
+      status: "error",
+      message: result.error.message,
+    };
+  } else {
+    const session = await auth();
+    if (!session) {
+      return {
+        status: "error",
+        message: "You must be logged in",
+      };
+    }
+    const booking = await prisma.Booking.findFirst({
       where: {
         id: +bookingId,
+        userId: session.user.userId,
       },
-      data: updateData,
     });
-  } catch (err) {
-    console.log(err, "error");
-    throw new Error("Booking could not be updated");
+    if (!booking) {
+      return {
+        status: "error",
+        message: "You are not allowed to update this booking",
+      };
+    }
+    const updateData = {
+      numGuests: +numGuests,
+      observations: observations,
+    };
+    try {
+      await prisma.Booking.update({
+        where: {
+          id: +bookingId,
+        },
+        data: updateData,
+      });
+    } catch (err) {
+      return {
+        status: "error",
+        message: "Booking could not be updated",
+      };
+    }
+    return {
+      status: "success",
+      message: "Successfully update reservation",
+    };
+    // redirect("/account/reservations");
   }
-
-  redirect("/account/reservations");
 }
 export async function createReservation(bookingData, formData) {
   const session = await auth();
