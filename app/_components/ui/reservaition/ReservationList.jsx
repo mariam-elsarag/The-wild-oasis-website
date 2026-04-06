@@ -2,6 +2,7 @@
 import React, { useOptimistic } from "react";
 import ReservationCard from "./ReservationCard";
 import { deleteReservation } from "@/app/_lib/actions";
+import { toast } from "sonner";
 
 const ReservationList = ({ bookings }) => {
   const [optimisticBooking, optimisticDelete] = useOptimistic(
@@ -12,7 +13,12 @@ const ReservationList = ({ bookings }) => {
   );
   const handleDelte = async (bookingId) => {
     optimisticDelete(bookingId);
-    await deleteReservation(bookingId);
+    const result = await deleteReservation(bookingId);
+    if (result?.status === "error") {
+      toast.error(result?.message);
+    } else {
+      toast.success(result?.message);
+    }
   };
   return (
     <ul className="space-y-6">

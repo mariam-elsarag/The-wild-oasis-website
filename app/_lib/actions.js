@@ -33,7 +33,10 @@ export async function updateProfile(formData) {
 export async function deleteReservation(bookingId) {
   const session = await auth();
   if (!session) {
-    throw new Error("You must be logged in");
+    return {
+      status: "error",
+      message: "You must be logged in",
+    };
   }
 
   const booking = await prisma.Booking.findFirst({
@@ -43,7 +46,10 @@ export async function deleteReservation(bookingId) {
     },
   });
   if (!booking) {
-    throw new Error("You are not allowed to delete this booking");
+    return {
+      status: "error",
+      message: "You are not allowed to delete this booking",
+    };
   }
   try {
     await prisma.Booking.delete({
@@ -52,8 +58,15 @@ export async function deleteReservation(bookingId) {
       },
     });
     revalidatePath("/account/reservations");
+    return {
+      status: "success",
+      message: "Successfully delete reservation",
+    };
   } catch (err) {
-    throw new Error("Booking could not be deleted");
+    return {
+      status: "error",
+      message: "Booking could not be deleted",
+    };
   }
 }
 export async function updateReservation(bookingId, formData) {
