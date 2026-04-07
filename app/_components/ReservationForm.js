@@ -1,14 +1,30 @@
 "use client";
 
-import Image from "next/image";
-import { useReservation } from "../_context/ReservationContext";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { differenceInDays } from "date-fns";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { useReservation } from "../_context/ReservationContext";
 import { createReservation } from "../_lib/actions";
-import SubmitButton from "./ui/SubmitButton";
+import { bookingSchema } from "../_utils/zodSchemas";
+import BookingForm from "./ui/reservaition/BookingForm";
 
 function ReservationForm({ cabin, user }) {
+  const router = useRouter();
   const { range, resetRange } = useReservation();
-
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(bookingSchema),
+    defaultValues: {
+      numGuests: null,
+      observations: "",
+    },
+  });
   const { maxCapacity, price, discount, id } = cabin;
   const startDate = range.from;
   const endDate = range.to;
@@ -21,7 +37,16 @@ function ReservationForm({ cabin, user }) {
     cabinPrice,
     cabinId: id,
   };
-  const createBooking = createReservation.bind(null, bookingData);
+  const onSubmit = async (data) => {
+    const result = await createReservation({ ...data, ...bookingData });
+    if (result?.status === "error") {
+      toast.error(result?.message);
+    } else {
+      resetRange();
+      router.push("/cabins/thank-you");
+      toast.success(result?.message);
+    }
+  };
   return (
     <div className="scale-[1.01]">
       <div className="bg-primary-800 text-primary-300 px-16 py-2 flex justify-between items-center">
@@ -39,54 +64,15 @@ function ReservationForm({ cabin, user }) {
           <p>{user.name}</p>
         </div>
       </div>
-
-      <form
-        action={async (formData) => {
-          resetRange();
-          await createBooking(formData);
-        }}
-        className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col"
-      >
-        <div className="space-y-2">
-          <label htmlFor="numGuests">How many guests?</label>
-          <select
-            name="numGuests"
-            id="numGuests"
-            className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
-            required
-          >
-            <option value="" key="">
-              Select number of guests...
-            </option>
-            {Array.from({ length: maxCapacity }, (_, i) => i + 1).map((x) => (
-              <option value={x} key={x}>
-                {x} {x === 1 ? "guest" : "guests"}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="observations">
-            Anything we should know about your stay?
-          </label>
-          <textarea
-            name="observations"
-            id="observations"
-            className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
-            placeholder="Any pets, allergies, special requirements, etc.?"
-          />
-        </div>
-
-        <div className="flex justify-end items-center gap-6">
-          <p className="text-primary-300 text-base">Start by selecting dates</p>
-          <SubmitButton
-            disabled={!(startDate && endDate)}
-            text="Reserve now
-"
-          />
-        </div>
-      </form>
+      <BookingForm
+        onSubmit={handleSubmit(onSubmit)}
+        buttonText="Reserve now"
+        control={control}
+        errors={errors}
+        isSubmitting={isSubmitting}
+        maxCapacity={maxCapacity}
+        disabled={!(startDate && endDate)}
+      />
     </div>
   );
 }

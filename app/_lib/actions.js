@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { auth, signIn, signOut } from "./auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { updateBookingSchema } from "../_utils/zodSchemas";
+import { bookingSchema } from "../_utils/zodSchemas";
 import { toast } from "sonner";
 
 export async function updateProfile(formData) {
@@ -73,7 +73,7 @@ export async function deleteReservation(bookingId) {
 }
 export async function updateReservation(data) {
   const { bookingId, numGuests, observations } = data;
-  const result = updateBookingSchema.safeParse(data);
+  const result = bookingSchema.safeParse(data);
   if (!result.success) {
     return {
       status: "error",
@@ -123,33 +123,42 @@ export async function updateReservation(data) {
     // redirect("/account/reservations");
   }
 }
-export async function createReservation(bookingData, formData) {
+export async function createReservation(data) {
+  console.log(data, "dd");
   const session = await auth();
   if (!session) {
-    throw new Error("You must be logged in");
+    return {
+      status: "error",
+      message: "You are not allowed to update this booking",
+    };
   }
   const newBooking = {
-    ...bookingData,
+    ...data,
     userId: session.user.userId,
-    numGuests: +formData.get("numGuests"),
-    observations: formData.get("observations").slice(0, 1000),
     extraPrice: 0,
-    totalPrice: bookingData.cabinPrice,
+    totalPrice: data.cabinPrice,
     status: "UNCONFIRMED",
     isPaid: false,
     hasBreakfast: false,
   };
-  console.log(bookingData, formData, "booking");
+
   try {
     await prisma.booking.create({
       data: newBooking,
     });
-    revalidatePath(`/cabins/${bookingData?.cabinId}`);
+    revalidatePath(`/cabins/${data?.cabinId}`);
   } catch (err) {
     console.error(err);
-    throw new Error("Booking could not be created");
+    return {
+      error: "error",
+      message: "Booking could not be created",
+    };
   }
-  redirect("/cabins/thank-you");
+
+  return {
+    error: "success",
+    message: "Successfully create new reservation",
+  };
 }
 export async function siginInAction() {
   await signIn("google", { redirectTo: "/account" });
