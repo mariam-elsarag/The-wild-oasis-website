@@ -1,7 +1,6 @@
 import UpdateProfileForm from "@/app/_components/ui/profile/UpdateProfileForm";
-import SelectCountry from "@/app/_components/ui/SelectCountry";
 import { auth } from "@/app/_lib/auth";
-import { getGuest } from "@/app/_lib/data-service";
+import { getCountries, getGuest } from "@/app/_lib/data-service";
 export const metadata = {
   title: "Update profile",
 };
@@ -9,6 +8,8 @@ export const metadata = {
 const Profile = async () => {
   const session = await auth();
   const user = await getGuest(session?.user?.email);
+  const countries = await getCountries();
+
   console.log(user);
 
   return (
@@ -22,14 +23,7 @@ const Profile = async () => {
         faster and smoother. See you soon!
       </p>
 
-      <UpdateProfileForm guest={user}>
-        <SelectCountry
-          name="nationality"
-          id="nationality"
-          className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
-          defaultCountry={user?.nationality}
-        />
-      </UpdateProfileForm>
+      <UpdateProfileForm countries={countries} guest={user} />
     </div>
   );
 };

@@ -1,35 +1,42 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { auth, signIn, signOut } from "./auth";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { bookingSchema } from "../_utils/zodSchemas";
-import { toast } from "sonner";
+import { bookingSchema, profileSchema } from "../_utils/zodSchemas";
+import { auth, signIn, signOut } from "./auth";
 
-export async function updateProfile(formData) {
+export async function updateProfile(data) {
   const session = await auth();
   if (!session) {
-    throw new Error("You must be logged in");
+    return { status: "error", message: "You must be logged in" };
   }
-  const nationalId = formData.get("nationalId");
-  const [nationality, countryFlag] = formData.get("nationality").split("%");
-  if (!/^[a-zA-Z0-9]{6,12}$/.test(nationalId)) {
-    throw new Error("Please provide a valid naitional ID");
+  const result = profileSchema.safeParse(data);
+  if (!result.success) {
+    return {
+      status: "error",
+      message: result.error.message,
+    };
+  } else {
+    try {
+      await prisma.User.update({
+        where: {
+          id: session?.user?.userId,
+        },
+        data: data,
+      });
+      revalidatePath("/account/profile");
+      return {
+        status: "success",
+        message: "Successfully update profile",
+      };
+    } catch (err) {
+      return {
+        status: "error",
+        message: "Guest couldn't be updated",
+      };
+    }
+    // redirect("/account/profile");
   }
-  const updateData = { nationality, countryFlag, nationalId };
-  try {
-    await prisma.User.update({
-      where: {
-        id: session?.user?.userId,
-      },
-      data: updateData,
-    });
-    revalidatePath("/account/profile");
-  } catch (err) {
-    throw new Error("Guest couldn't be updated");
-  }
-  redirect("/account/profile");
 }
 
 export async function deleteReservation(bookingId) {

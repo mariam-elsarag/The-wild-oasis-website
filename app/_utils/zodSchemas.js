@@ -8,3 +8,13 @@ export const bookingSchema = z.object({
     .max(500, "observations must be at most 500 characters")
     .optional(),
 });
+
+export const profileSchema = z.object({
+  nationality: z.string().min(1, "Please select a country"),
+  nationalId: z
+    .string()
+    .regex(
+      /^[a-zA-Z0-9]{6,12}$/,
+      "National ID must be 6–12 characters and contain only letters and numbers"
+    ),
+});
