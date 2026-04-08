@@ -42,10 +42,6 @@ function SideNavigation() {
             </li>
           );
         })}
-
-        <li className="hidden md:flex mt-auto">
-          <SignOutButton />
-        </li>
       </ul>
     </nav>
   );
