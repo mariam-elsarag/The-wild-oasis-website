@@ -21,7 +21,7 @@ const ReservationList = ({ bookings }) => {
     }
   };
   return (
-    <ul className="space-y-6">
+    <ul className="grid gap-y-6 gap-x-4 md:grid-cols-2 lg:grid-cols-1">
       {optimisticBooking.map((booking) => (
         <ReservationCard
           booking={booking}
