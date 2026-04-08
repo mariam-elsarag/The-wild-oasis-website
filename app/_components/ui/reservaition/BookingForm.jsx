@@ -12,6 +12,7 @@ import { Controller } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import SpinnerMini from "@/app/_components/feedback/SpinnerMini";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 const BookingForm = ({
   onSubmit,
   buttonText,
@@ -21,8 +22,8 @@ const BookingForm = ({
   maxCapacity,
   disabled,
   descripton,
+  isEdit = false,
 }) => {
-  console.log(errors, "er");
   return (
     <form
       onSubmit={onSubmit}
@@ -82,6 +83,33 @@ const BookingForm = ({
         )}
       </div>
 
+      <div className="space-y-2">
+        <Controller
+          name="hasBreakfast"
+          control={control}
+          render={({ field }) => (
+            <div className="flex items-center gap-3">
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                id="hasBreakfast"
+                disabled={isEdit}
+              />
+              <label
+                htmlFor="hasBreakfast"
+                className="text-sm md:text-base cursor-pointer"
+              >
+                Add breakfast to your stay
+              </label>
+            </div>
+          )}
+        />
+        {errors.hasBreakfast && (
+          <p className="text-destructive text-xs">
+            {errors.hasBreakfast.message}
+          </p>
+        )}
+      </div>
       <div className="flex justify-end items-center gap-6">
         {descripton && (
           <p className="text-primary-300 text-sm md:text-base">{descripton}</p>

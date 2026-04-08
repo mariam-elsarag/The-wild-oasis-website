@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 import { bookingSchema, profileSchema } from "../_utils/zodSchemas";
 import { auth, signIn, signOut } from "./auth";
 
+import { redirect } from "next/navigation";
+
 export async function updateProfile(data) {
   const session = await auth();
   if (!session) {
@@ -145,14 +147,12 @@ export async function createReservation(data) {
     totalPrice: data.cabinPrice,
     status: "UNCONFIRMED",
     isPaid: false,
-    hasBreakfast: false,
   };
 
   try {
     await prisma.booking.create({
       data: newBooking,
     });
-    revalidatePath(`/cabins/${data?.cabinId}`);
   } catch (err) {
     console.error(err);
     return {
@@ -161,10 +161,8 @@ export async function createReservation(data) {
     };
   }
 
-  return {
-    error: "success",
-    message: "Successfully create new reservation",
-  };
+  revalidatePath(`/cabins/${data?.cabinId}`);
+  redirect("/cabins/thank-you");
 }
 export async function siginInAction() {
   await signIn("google", { redirectTo: "/account/profile" });

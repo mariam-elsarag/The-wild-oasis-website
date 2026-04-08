@@ -37,6 +37,7 @@ const UpdateReservation = ({ maxCapacity, booking }) => {
         errors={errors}
         isSubmitting={isSubmitting}
         maxCapacity={maxCapacity}
+        isEdit
       />
     </>
   );

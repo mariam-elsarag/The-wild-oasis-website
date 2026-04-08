@@ -23,6 +23,7 @@ function ReservationForm({ cabin, user }) {
     defaultValues: {
       numGuests: null,
       observations: "",
+      hasBreakfast: false,
     },
   });
   const { maxCapacity, price, discount, id } = cabin;
@@ -43,7 +44,7 @@ function ReservationForm({ cabin, user }) {
       toast.error(result?.message);
     } else {
       resetRange();
-      router.push("/cabins/thank-you");
+
       toast.success(result?.message);
     }
   };
@@ -73,6 +74,7 @@ function ReservationForm({ cabin, user }) {
         maxCapacity={maxCapacity}
         disabled={!(startDate && endDate)}
         descripton="Start by selecting dates"
+        isEdit={false}
       />
     </div>
   );
