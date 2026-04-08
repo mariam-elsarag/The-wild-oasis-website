@@ -39,8 +39,8 @@ function ReservationForm({ cabin, user }) {
     cabinId: id,
   };
   const onSubmit = async (data) => {
-    const result = await createReservation({ ...data, ...bookingData });
     resetRange();
+    const result = await createReservation({ ...data, ...bookingData });
     if (result?.status === "error") {
       toast.error(result?.message);
     } else {
