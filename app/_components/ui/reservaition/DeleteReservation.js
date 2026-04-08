@@ -49,7 +49,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-function DeleteReservation({ bookingId, onDelete }) {
+function DeleteReservation({ bookingId, onDelete, className }) {
   const [isPending, startTransition] = useTransition();
 
   const handleConfirmDelete = () => {
@@ -59,12 +59,14 @@ function DeleteReservation({ bookingId, onDelete }) {
   return (
     <Dialog>
       <DialogTrigger
-        className="cursor-pointer group flex items-center gap-2 uppercase text-xs font-bold text-primary-300 flex-grow px-3 hover:bg-accent-600 transition-colors hover:text-primary-900"
+        className={`cursor-pointer group flex items-center gap-2 uppercase text-xs font-bold text-primary-300 flex-grow px-3 hover:bg-accent-600 transition-colors hover:text-primary-900  ${
+          className ?? ""
+        }`}
         asChild
       >
         <button
           disabled={isPending}
-          className="cursor-pointer flex items-center gap-2"
+          className="cursor-pointer flex items-center juc gap-2"
         >
           {!isPending ? (
             <>

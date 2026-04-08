@@ -7,8 +7,8 @@ const Cabin = ({ cabin }) => {
   const { name, maxCapacity, price, discount, image, description } = cabin;
 
   return (
-    <div className="grid grid-cols-[3fr_4fr] gap-20 border border-primary-800 py-3 px-10 mb-24">
-      <div className="relative scale-[1.15] -translate-x-3">
+    <div className="grid relative md:grid-cols-[3fr_4fr] gap-6 md:gap-8 lg:gap-20 border border-primary-800 lg:py-3 lg:px-10 mb-24">
+      <div className="relative h-[320px]! md:h-['auto']! lg:scale-[1.15] lg:-translate-x-3">
         <Image
           src={image}
           fill
@@ -17,8 +17,8 @@ const Cabin = ({ cabin }) => {
         />
       </div>
 
-      <div>
-        <h3 className="text-accent-100 font-black text-7xl mb-5 translate-x-[-254px] bg-primary-950 p-6 pb-1 w-[150%]">
+      <div className="px-4 lg:px-0">
+        <h3 className="absolute top-4 -right-1  md:relative md:top-['auto'] md:right-0 w-fit flex items-center justify-center text-accent-100 font-black text-2xl md:text-3xl  lg:text-6xl mb-5 md:translate-x-[-120px] lg:translate-x-[-254px] bg-primary-950 px-4 py-4 lg:p-6 lg:pb-1 ">
           Cabin {name}
         </h3>
 

@@ -131,7 +131,6 @@ export async function updateReservation(data) {
   }
 }
 export async function createReservation(data) {
-  console.log(data, "dd");
   const session = await auth();
   if (!session) {
     return {
@@ -168,7 +167,7 @@ export async function createReservation(data) {
   };
 }
 export async function siginInAction() {
-  await signIn("google", { redirectTo: "/account" });
+  await signIn("google", { redirectTo: "/account/profile" });
 }
 export async function siginOutAction() {
   await signOut({ redirectTo: "/" });

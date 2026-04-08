@@ -12,13 +12,13 @@ const About = async () => {
   const cabins = await getCabins();
   const numberOfCabins = cabins?.length ?? 0;
   return (
-    <div className="grid grid-cols-5 gap-x-24 gap-y-32 text-lg items-center">
-      <div className="col-span-3">
-        <h1 className="text-4xl mb-10 text-accent-400 font-medium">
+    <div className="grid sm:grid-cols-2 lg:grid-cols-5 lg:gap-x-24 gap-6 lg:gap-y-32 text-lg items-center">
+      <div className=" order-2 sm:order-1  lg:col-span-3">
+        <h1 className=" text-2xl lg:text-4xl mb-5 lg:mb-10 text-accent-400 font-medium">
           Welcome to The Wild Oasis
         </h1>
 
-        <div className="space-y-8">
+        <div className=" space-y-4 lg:space-y-8 text-sm lg:text-base">
           <p>
             Where nature&apos;s beauty and comfortable living blend seamlessly.
             Hidden away in the heart of the Italian Dolomites, this is your
@@ -40,7 +40,7 @@ const About = async () => {
         </div>
       </div>
 
-      <div className="col-span-2">
+      <div className="order-1 sm:order-2  lg:col-span-2">
         <Image
           src={AboutImg1}
           placeholder="blur"
@@ -48,7 +48,7 @@ const About = async () => {
         />
       </div>
 
-      <div className="col-span-2">
+      <div className="order-3  lg:col-span-2">
         <Image
           placeholder="blur"
           src={AboutImg2}
@@ -56,12 +56,12 @@ const About = async () => {
         />
       </div>
 
-      <div className="col-span-3">
-        <h1 className="text-4xl mb-10 text-accent-400 font-medium">
+      <div className="order-4  lg:col-span-3">
+        <h1 className="text-2xl lg:text-4xl mb-5 lg:mb-10 text-accent-400 font-medium">
           Managed by our family since 1962
         </h1>
 
-        <div className="space-y-8">
+        <div className=" space-y-4 lg:space-y-8 text-sm lg:text-base">
           <p>
             Since 1962, The Wild Oasis has been a cherished family-run retreat.
             Started by our grandparents, this haven has been nurtured with love
@@ -80,7 +80,7 @@ const About = async () => {
           <div>
             <Link
               href="/cabins"
-              className="inline-block mt-4 bg-accent-500 px-8 py-5 text-primary-800 text-lg font-semibold hover:bg-accent-600 transition-all"
+              className="inline-block mt-4 bg-accent-500 px-4 lg:px-8 py-4 lg:py-5 text-primary-800 text-base sm:text-lg font-semibold hover:bg-accent-600 transition-all"
             >
               Explore our luxury cabins
             </Link>

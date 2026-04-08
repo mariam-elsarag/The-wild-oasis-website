@@ -20,16 +20,19 @@ const BookingForm = ({
   isSubmitting,
   maxCapacity,
   disabled,
+  descripton,
 }) => {
   console.log(errors, "er");
   return (
     <form
       onSubmit={onSubmit}
-      className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col"
+      className=" bg-primary-900 h-full py-6 px-4 md:px-8 xl:px-16 text-lg flex gap-6 flex-col"
     >
       {/* Number of guests */}
       <div className="space-y-2">
-        <label htmlFor="numGuests">How many guests?</label>
+        <label className="text-sm md:text-base" htmlFor="numGuests">
+          How many guests?
+        </label>
         <Controller
           name="numGuests"
           control={control}
@@ -59,7 +62,7 @@ const BookingForm = ({
 
       {/* Observations */}
       <div className="space-y-2">
-        <label htmlFor="observations">
+        <label className="text-sm md:text-base" htmlFor="observations">
           Anything we should know about your stay?
         </label>
         <Controller
@@ -80,6 +83,9 @@ const BookingForm = ({
       </div>
 
       <div className="flex justify-end items-center gap-6">
+        {descripton && (
+          <p className="text-primary-300 text-sm md:text-base">{descripton}</p>
+        )}
         <Button type="submit" disabled={isSubmitting || disabled}>
           {isSubmitting && <SpinnerMini />}
           {buttonText}

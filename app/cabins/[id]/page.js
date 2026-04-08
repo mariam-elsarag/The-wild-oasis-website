@@ -19,7 +19,7 @@ const CabinDetails = async ({ params }) => {
       <Cabin cabin={cabin} />
 
       <div>
-        <h2 className="text-5xl font-semibold text-center text-accent-400 mb-10">
+        <h2 className=" text-xl sm:text-2xl md:text-3xl lg:text-5xl font-semibold text-center text-accent-400 mb-10">
           Reserve {cabin?.na} today. Pay on arrival.
         </h2>
         <Suspense fallback={<Spinner />}>

@@ -30,7 +30,7 @@ const Filter = () => {
             activeFilter === filterItem?.value
               ? "bg-primary-700 text-primary-50"
               : ""
-          } cursor-pointer px-5 py-2 hover:bg-primary-700 transition-all ease-in-out duration-300`}
+          } cursor-pointer text-sm sm:text-base px-1.5 sm:px-5 py-2 hover:bg-primary-700 transition-all ease-in-out duration-300`}
           key={filterItem?.id}
           onClick={() => {
             handleFilter(filterItem?.value);

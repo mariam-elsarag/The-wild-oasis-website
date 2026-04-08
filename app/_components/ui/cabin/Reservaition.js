@@ -13,7 +13,7 @@ const Reservaition = async ({ cabin }) => {
     getSettings(),
   ]);
   return (
-    <div className="grid grid-cols-2 border border-primary-800  ">
+    <div className="grid md:grid-cols-2 border border-primary-800 overflow-hidden ">
       <DateSelector
         settings={settings}
         bookedDates={bookedDates}

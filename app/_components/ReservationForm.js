@@ -48,8 +48,8 @@ function ReservationForm({ cabin, user }) {
     }
   };
   return (
-    <div className="scale-[1.01]">
-      <div className="bg-primary-800 text-primary-300 px-16 py-2 flex justify-between items-center">
+    <div className="">
+      <div className=" bg-primary-800 text-primary-300 px-4 md:px-8 xl:px-16 py-3 flex justify-between items-center">
         <p>Logged in as</p>
 
         <div className="flex gap-4 items-center">
@@ -72,6 +72,7 @@ function ReservationForm({ cabin, user }) {
         isSubmitting={isSubmitting}
         maxCapacity={maxCapacity}
         disabled={!(startDate && endDate)}
+        descripton="Start by selecting dates"
       />
     </div>
   );
